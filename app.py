@@ -222,8 +222,8 @@ if submitted:
 
     st.subheader("Simulação de Cenários")
     st.markdown(
-        "A simulação testa **"e se"** — ela pega seu cenário atual e pergunta: "
-        "*o que aconteceria com a tendência se eu mudar algum fator?* "
+        "A simulação testa **'e se'** — ela pega seu cenário atual e pergunta: "
+        "o que aconteceria com a tendência se eu mudar algum fator? "
         "As setas mostram o **impacto** (positivo ▲ ou negativo ▼) na probabilidade de cada classe."
     )
 
