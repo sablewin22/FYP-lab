@@ -136,6 +136,14 @@ if submitted:
         ]
         sim_results, *_ = simulate(base_input, scenarios)
 
+        sim_results_pt = []
+        for s in sim_results:
+            sim_results_pt.append({
+                "name": s["name"],
+                "class": TREND_LABELS.get(s["class"], s["class"]),
+                "deltas": {TREND_LABELS.get(k, k): v for k, v in s["deltas"].items()},
+            })
+
         display_input = {
             "platform_name": plat_display, "region_name": reg_display,
             "language_name": lang_display, "category_name": cat_display,
@@ -164,14 +172,6 @@ if submitted:
         for feat, imp in sorted(top5.items(), key=lambda x: -x[1]):
             label = FEATURE_LABELS.get(feat, feat)
             st.write(f"- **{label}**: {imp:.2%}")
-
-    sim_results_pt = []
-    for s in sim_results:
-        sim_results_pt.append({
-            "name": s["name"],
-            "class": TREND_LABELS.get(s["class"], s["class"]),
-            "deltas": {TREND_LABELS.get(k, k): v for k, v in s["deltas"].items()},
-        })
 
     st.subheader("Simulação de Cenários")
     for s in sim_results_pt:
