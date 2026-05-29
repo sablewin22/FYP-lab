@@ -100,6 +100,14 @@ if not MODEL_PATH.exists() or not PREPROCESSOR_PATH.exists():
     with st.spinner("Treinando modelo pela primeira vez..."):
         train_model()
 
+import os
+if not os.getenv("GROQ_API_KEY"):
+    st.info(
+        "💡 **Recomendações da IA limitadas.** "
+        "Crie um arquivo `.env` com `GROQ_API_KEY=sua_chave` para ativar recomendações com inteligência artificial. "
+        "Enquanto isso, você receberá recomendações baseadas em regras."
+    )
+
 with st.form("input_form"):
     col1, col2 = st.columns(2)
     with col1:
@@ -213,18 +221,42 @@ if submitted:
             st.write(f"- **{label}**: {imp:.2%}")
 
     st.subheader("Simulação de Cenários")
-    st.caption("Veja como a tendência mudaria se você alterasse alguns fatores. As setas indicam aumento (▲) ou queda (▼) na probabilidade de cada classe.")
+    st.markdown(
+        "A simulação testa **"e se"** — ela pega seu cenário atual e pergunta: "
+        "*o que aconteceria com a tendência se eu mudar algum fator?* "
+        "As setas mostram o **impacto** (positivo ▲ ou negativo ▼) na probabilidade de cada classe."
+    )
+
     for s in sim_results_pt:
+        destaques = []
+        for cls, delta in s["deltas"].items():
+            if delta > 0.05:
+                destaques.append(f"**{cls}** sobe {delta:+.0%}")
+            elif delta < -0.05:
+                destaques.append(f"**{cls}** cai {delta:+.0%}")
+
+        if destaques:
+            resumo_sim = " → ".join(destaques)
+        else:
+            resumo_sim = "Impacto pequeno (menos de 5%)"
+
         with st.container():
-            st.markdown(f"**{s['name']}** — Tendência: `{s['class']}`")
-            for cls, delta in s["deltas"].items():
-                arrow = "▲" if delta > 0 else "▼" if delta < 0 else "—"
-                st.write(f"  {arrow} {cls}: {delta:+.2%}")
+            st.markdown(f"**{s['name']}**")
+            st.markdown(f"*Tendência resultante: `{s['class']}`*")
+            st.markdown(f"📊 {resumo_sim}")
+            with st.expander("Ver detalhes completos"):
+                for cls, delta in s["deltas"].items():
+                    arrow = "▲" if delta > 0 else "▼" if delta < 0 else "—"
+                    cor = "green" if delta > 0 else "red" if delta < 0 else "gray"
+                    st.markdown(f"<span style='color:{cor}'>{arrow} {cls}: {delta:+.0%}</span>", unsafe_allow_html=True)
             st.divider()
 
     if recs:
         st.subheader("Recomendações da IA")
-        st.caption("Sugestões geradas por inteligência artificial com base na sua análise.")
+        if "erro" in recs:
+            st.info("💡 Recomendações baseadas em regras (modo offline). Configure a chave GROQ_API_KEY no .env para recomendações com IA.")
+        else:
+            st.caption("Sugestões geradas por inteligência artificial com base na sua análise.")
         card = f"""
         <div style="background:#1a1a2e;padding:20px;border-radius:12px;color:white;margin:10px 0">
             <p><strong>Plataforma ideal:</strong> {recs.get('plataforma_ideal','—')}</p>
