@@ -67,10 +67,10 @@ def _fallback(trend: str) -> dict:
         "seasonal": "Aproveite a sazonalidade. Planeje postagens nos picos de interesse identificados.",
     }
     return {
-        "plataforma_ideal": "youtube" if trend in ("stable", "seasonal") else "tiktok",
-        "estrategia_trafego": "hashtag e feed",
-        "sugestoes_hashtag": "#trending #viral #content",
-        "melhor_dia": "fim de semana",
-        "tom_conteudo": "autêntico e educativo",
+        "plataforma_ideal": "YouTube" if trend in ("stable", "seasonal") else "TikTok",
+        "estrategia_trafego": "Hashtag e Feed",
+        "sugestoes_hashtag": "#tendência #viral #conteúdo",
+        "melhor_dia": "Fim de semana",
+        "tom_conteudo": "Autêntico e educativo",
         "resumo": tips.get(trend, "Analise os dados para definir a melhor estratégia."),
     }
