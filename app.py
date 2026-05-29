@@ -280,7 +280,7 @@ if submitted:
         try:
             pdf_bytes = generate_pdf(display_input, trend_pt, probs_pt, sim_results_pt, recs)
             st.download_button(
-                "📄 Exportar PDF", data=pdf_bytes, file_name="contentai_report.pdf",
+                "📄 Exportar PDF", data=pdf_bytes, file_name="fyp_lab_relatorio.pdf",
                 mime="application/pdf", use_container_width=True,
                 help="Baixe um relatório completo com todos os resultados e recomendações.",
             )
