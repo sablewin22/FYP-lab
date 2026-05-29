@@ -1,3 +1,6 @@
+from dotenv import load_dotenv
+load_dotenv()
+
 import streamlit as st
 import pandas as pd
 import plotly.graph_objects as go
@@ -81,7 +84,8 @@ if submitted:
 
     st.subheader("Resultado da Previsao")
     colors = {"rising": "#22c55e", "stable": "#3b82f6", "declining": "#ef4444", "seasonal": "#f59e0b"}
-    st.markdown(f"<h2 style='color:{colors.get(trend,\"#333\")}'>{trend.upper()}</h2>", unsafe_allow_html=True)
+    color = colors.get(trend, "#333")
+    st.markdown(f"<h2 style='color:{color}'>{trend.upper()}</h2>", unsafe_allow_html=True)
 
     fig = go.Figure(data=[go.Bar(x=list(probs.keys()), y=list(probs.values()),
                                   marker_color=[colors.get(k, "#888") for k in probs.keys()])])
