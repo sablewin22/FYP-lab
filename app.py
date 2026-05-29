@@ -290,7 +290,7 @@ if submitted:
 st.divider()
 st.markdown(
     "<div style='text-align:center; color:#888; font-size:13px; line-height:1.5'>"
-    "<strong>Júlia Cereja e Sabrina Azulay</strong> · "
+        "Equipe: <strong>Júlia Cereja e Sabrina Azulay</strong> · "
     "Orientador: <strong>Josir Cardoso Gomes</strong> · "
     "<a href='https://huggingface.co/datasets/tarekmasryo/youtube-tiktok-trends-dataset-2025' "
     "style='color:#888' target='_blank'>Dataset</a>"
