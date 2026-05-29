@@ -286,3 +286,15 @@ if submitted:
             )
         except Exception as e:
             st.warning(f"Não foi possível gerar o PDF: {e}")
+
+st.divider()
+st.markdown(
+    "<div style='text-align:center; color:#888; font-size:14px'>"
+    "<p><strong>Júlia Cereja e Sabrina Azulay</strong></p>"
+    "<p>Orientador: <strong>Josir Cardoso Gomes</strong></p>"
+    "<p><a href='https://huggingface.co/datasets/tarekmasryo/youtube-tiktok-trends-dataset-2025' "
+    "style='color:#888' target='_blank'>"
+    "Dataset: YouTube/TikTok Trends Dataset 2025</a></p>"
+    "</div>",
+    unsafe_allow_html=True,
+)
