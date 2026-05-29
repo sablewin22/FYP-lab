@@ -100,13 +100,6 @@ if not MODEL_PATH.exists() or not PREPROCESSOR_PATH.exists():
     with st.spinner("Treinando modelo pela primeira vez..."):
         train_model()
 
-import os
-if not os.getenv("GROQ_API_KEY"):
-    st.info(
-        "💡 **Recomendações da IA limitadas.** "
-        "Crie um arquivo `.env` com `GROQ_API_KEY=sua_chave` para ativar recomendações com inteligência artificial. "
-        "Enquanto isso, você receberá recomendações baseadas em regras."
-    )
 
 with st.form("input_form"):
     col1, col2 = st.columns(2)
