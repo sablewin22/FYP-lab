@@ -141,7 +141,7 @@ if submitted:
             "language_name": lang_display, "category_name": cat_display,
             "creator_tier_name": tier_display, "traffic_source_name": traffic_display,
         }
-        recs = get_recommendations(display_input, trend, probs, sim_results)
+        recs = get_recommendations(display_input, trend, probs, sim_results_pt)
 
     st.subheader("Resultado da Previsão")
     trend_pt = TREND_LABELS.get(trend, trend)
