@@ -14,6 +14,11 @@ from report.generator import generate_pdf
 
 st.set_page_config(page_title="FYP Lab", layout="centered")
 st.title("FYP Lab — Estratégia para TikTok e YouTube Shorts")
+st.markdown(
+    "Preencha os dados abaixo para descobrir se o seu conteúdo vai bombar. "
+    "O modelo analisa padrões de milhares de posts e recomenda a melhor estratégia "
+    "com base em tendências reais do TikTok e YouTube."
+)
 
 COLUMN_MAP = {
     "platform": "platform_cat", "region": "region_cat", "language": "language_cat",
@@ -98,13 +103,37 @@ if not MODEL_PATH.exists() or not PREPROCESSOR_PATH.exists():
 with st.form("input_form"):
     col1, col2 = st.columns(2)
     with col1:
-        cat_display = st.selectbox("Categoria", [c[0] for c in CATEGORIES])
-        plat_display = st.selectbox("Plataforma", [p[0] for p in PLATFORMS])
-        reg_display = st.selectbox("Região", [r[0] for r in REGIONS])
+        cat_display = st.selectbox(
+            "Categoria",
+            [c[0] for c in CATEGORIES],
+            help="Qual o tema do seu conteúdo? O modelo usa isso para identificar tendências específicas do nicho.",
+        )
+        plat_display = st.selectbox(
+            "Plataforma",
+            [p[0] for p in PLATFORMS],
+            help="Onde você quer postar? Cada plataforma tem padrões de engajamento diferentes.",
+        )
+        reg_display = st.selectbox(
+            "Região",
+            [r[0] for r in REGIONS],
+            help="Qual região geográfica seu público-alvo está? O comportamento varia por região.",
+        )
     with col2:
-        lang_display = st.selectbox("Idioma", [l[0] for l in LANGUAGES])
-        tier_display = st.selectbox("Porte do Criador", [t[0] for t in CREATOR_TIERS])
-        traffic_display = st.selectbox("Origem do Tráfego", [t[0] for t in TRAFFIC_SOURCES])
+        lang_display = st.selectbox(
+            "Idioma",
+            [l[0] for l in LANGUAGES],
+            help="Idioma principal do seu conteúdo. Afeta o alcance e o engajamento.",
+        )
+        tier_display = st.selectbox(
+            "Porte do Criador",
+            [t[0] for t in CREATOR_TIERS],
+            help="Seu porte no momento: Nano (iniciante), Micro (pequeno), Médio ou Macro (grande).",
+        )
+        traffic_display = st.selectbox(
+            "Origem do Tráfego",
+            [t[0] for t in TRAFFIC_SOURCES],
+            help="Como as pessoas encontram seu conteúdo? Pesquisa, Feed, Compartilhamento, Perfil, Externo ou Hashtag.",
+        )
     submitted = st.form_submit_button("Analisar", use_container_width=True)
 
 if submitted:
@@ -152,9 +181,18 @@ if submitted:
         recs = get_recommendations(display_input, trend, probs, sim_results_pt)
 
     st.subheader("Resultado da Previsão")
+    st.caption("Com base nos dados informados, o modelo prevê a tendência do seu conteúdo.")
+
     trend_pt = TREND_LABELS.get(trend, trend)
     color = TREND_COLORS.get(trend, "#333")
     st.markdown(f"<h2 style='color:{color}'>{trend_pt}</h2>", unsafe_allow_html=True)
+
+    st.caption(
+        "**Em Alta**: conteúdo com potencial de crescimento • "
+        "**Estável**: desempenho consistente • "
+        "**Em Queda**: perdendo tração • "
+        "**Sazonal**: varia conforme época do ano"
+    )
 
     probs_pt = {TREND_LABELS.get(k, k): v for k, v in probs.items()}
     fig = go.Figure(data=[go.Bar(
@@ -169,11 +207,13 @@ if submitted:
     st.plotly_chart(fig, use_container_width=True)
 
     with st.expander("Principais Fatores na Decisão"):
+        st.caption("Quanto maior o percentual, mais esse fator influenciou a previsão.")
         for feat, imp in sorted(top5.items(), key=lambda x: -x[1]):
             label = FEATURE_LABELS.get(feat, feat)
             st.write(f"- **{label}**: {imp:.2%}")
 
     st.subheader("Simulação de Cenários")
+    st.caption("Veja como a tendência mudaria se você alterasse alguns fatores. As setas indicam aumento (▲) ou queda (▼) na probabilidade de cada classe.")
     for s in sim_results_pt:
         with st.container():
             st.markdown(f"**{s['name']}** — Tendência: `{s['class']}`")
@@ -184,6 +224,7 @@ if submitted:
 
     if recs:
         st.subheader("Recomendações da IA")
+        st.caption("Sugestões geradas por inteligência artificial com base na sua análise.")
         card = f"""
         <div style="background:#1a1a2e;padding:20px;border-radius:12px;color:white;margin:10px 0">
             <p><strong>Plataforma ideal:</strong> {recs.get('plataforma_ideal','—')}</p>
@@ -199,8 +240,9 @@ if submitted:
         try:
             pdf_bytes = generate_pdf(display_input, trend_pt, probs_pt, sim_results_pt, recs)
             st.download_button(
-                "Exportar PDF", data=pdf_bytes, file_name="contentai_report.pdf",
+                "📄 Exportar PDF", data=pdf_bytes, file_name="contentai_report.pdf",
                 mime="application/pdf", use_container_width=True,
+                help="Baixe um relatório completo com todos os resultados e recomendações.",
             )
         except Exception as e:
             st.warning(f"Não foi possível gerar o PDF: {e}")
