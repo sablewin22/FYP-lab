@@ -161,9 +161,24 @@ if submitted:
         trend, probs, top5 = predict(base_input)
         scenarios = [
             {"name": "Postar no fim de semana com hashtag", "changes": {"weekend_hashtag_boost": 1}},
-            {"name": "Upgrade de criador (Nano -> Médio)", "changes": {"creator_tier_cat": MAPPING["creator_tier"]["mid"]}},
-            {"name": "Alto tráfego + hashtag", "changes": {"views_per_day": 50000, "weekend_hashtag_boost": 1}},
         ]
+
+        tier_idx = next(i for i, (label, raw) in enumerate(CREATOR_TIERS) if raw == tier_raw)
+        if tier_idx < len(CREATOR_TIERS) - 1:
+            next_tier_label, next_tier_raw = CREATOR_TIERS[tier_idx + 1]
+            scenarios.append({
+                "name": f"Upgrade de criador ({tier_display} → {next_tier_label})",
+                "changes": {"creator_tier_cat": MAPPING["creator_tier"][next_tier_raw]},
+            })
+        else:
+            scenarios.append({
+                "name": "Já está no maior porte (Macro)",
+                "changes": {},
+            })
+
+        scenarios.append(
+            {"name": "Alto tráfego + hashtag", "changes": {"views_per_day": 50000, "weekend_hashtag_boost": 1}},
+        )
         sim_results, *_ = simulate(base_input, scenarios)
 
         sim_results_pt = []
